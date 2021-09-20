@@ -29,7 +29,7 @@
 
 \section{Proof}
 
-$E = \left\{
+Let $E = \left\{
         \begin{array}{ll}
             1 & if \hat{M} \neq M \\
             0 & if \hat{M} \eq M
@@ -37,6 +37,10 @@ $E = \left\{
     \right.$
 \\ \\
 $H(E) &= H_{2}(P_e)$
+
+If $M = \hat{M} \implies H(M|\hat{M}) = 0 $
+
+If $M, \hat{M}$ are independent $\implies H(M|\hat{M} = H(M) $
 \begin{flalign}
 H(M,E | \hat{M}) &= H(M|\hat{M}) + H(E|M,\hat{M}) && \\
 H(M,E | \hat{M}) &= H(E|\hat{M}) + H(M|E,\hat{M}) && \\
@@ -54,28 +58,6 @@ H(M|\hat{M}) &\leq H_{2}(P_e) + H(M|\hat{M}, E=1)P_e && \\
 H(M|\hat{M}) &\leq H_{2}(P_e) + P_eH(M) && \\ 
 H(M|\hat{M}) &\leq H_{2}(P_e) + P_e log_{2}|M| && 
 \end{flalign}
-
-\section{Proof of converse of channel coding theorem}
-\begin{tikzpicture}[
-    node distance = 5mm and 7mm,
-      start chain = going right,
-  alg/.style = {draw, align=center, font=\linespread{0.8}\selectfont}
-                    ]
-\begin{scope}[every node/.append style={on chain, join=by -Stealth}]
-\node (n1)  {$M^{k_n}$};
-\node (n2) [alg]  {$ENC_n$};
-\node (n3) [alg]  {$P(Y|X)$};
-\node (n4) [alg] {$DEC_n$};
-\node (n5)  {$\hat{M}^{k_n}$};
-\end{scope}
-\node[below=of n1] {\in $\{0,1\}^{k_n}$}
-\node[below=of n3]  {$X_i\in\mathbb{X}$\hspace{.4in}$Y_i\in\mathbb{Y}$};
-\end{tikzpicture}
-
-Consider any sequence $ENC_n, DEC_n$ such that \\
-$\lim_{n \to \infty} inf \dfrac{k_n}{n} \geq c + \epsilon$ \\
-Then, \\
-$\lim_{n \to \infty} inf Pr[\hat{M}^{k_n} \neq \M^{k_n}]$
 
 \end{document}
 
