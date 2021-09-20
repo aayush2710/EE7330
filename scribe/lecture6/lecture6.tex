@@ -5,7 +5,11 @@
 \usepackage{./teaching_doc_macros}
 \usepackage{amsmath}
 \usepackage{tikz}
-\usetikzlibrary{positioning}
+\usetikzlibrary{arrows.meta,
+                chains,
+                positioning,
+                shapes.geometric
+                }
 \title{Lecture 1: Introduction}
 \author{Shashank Vatedka}
 
@@ -14,123 +18,65 @@
 
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**UNIT**}{**LECTURER**}{**SCRIBE**}
-\lecture{6}{Review of information theoretic quantities}{Shashank Vatedka}{Kuntal Kokate}
+\lecture{7}{Fano's Inequality}{Shashank Vatedka}{Aayush Goyal}
 
-\section{Data processing inequality}
+\section{Fano's inequality}
 
-\textbf{If $X-Y-Z$ forms a Markov chain,}
+\textbf{If $M$ \& $\hat{M}$ are jointly distributed \7 $P_{e} = P_{r}[M\neq \hat{M}]$} then,
 \begin{itemize}
-    \item $I(X;Y) \geq I(X;Z)$
-    \item $I(Y;Z) \geq I(X;Z)$
-    \item $Pr_{Z|X,Y}(z|x,y) = Pr_{Z|Y}(z,y)$
-    \item $Pr_{X|Y,Z}(x|y,z) = Pr_{X|Y}(x|y)$
+    \item $H(M|\hat{M}) \leq H_{2}(P_{e}) + P_e log_{2}|M|$
 \end{itemize} 
 
-\section{Chain rule of entropy}
-\begin{itemize}
-    \item \begin{align}
-        H(X;Y) & = H(X) + H(Y|X) \\
-            & = H(Y) + H(X|Y)
-    \end{align}
-    \item \begin{align}H(X_1, X_2, ... ,X_n) = \sum_{i=1}^{\infty} H(X_i|X_1, X_2 ... , X_{i-1})\end{align}
-\end{itemize}
+\section{Proof}
 
-\section{Chain rule of mutual information}
-\begin{itemize}
-    \item $I(X_1, X_2; Y) = I(X_1; Y) + I(X_2; Y| X_1)$
-\end{itemize}
+$E = \left\{
+        \begin{array}{ll}
+            1 & if \hat{M} \neq M \\
+            0 & if \hat{M} \eq M
+        \end{array}
+    \right.$
+\\ \\
+$H(E) &= H_{2}(P_e)$
+\begin{flalign}
+H(M,E | \hat{M}) &= H(M|\hat{M}) + H(E|M,\hat{M}) && \\
+H(M,E | \hat{M}) &= H(E|\hat{M}) + H(M|E,\hat{M}) && \\
+H(M|\hat{M}) &= H(E|\hat{M}) + H(M|E, \hat{M}) - H(E|M, \hat{M}) &&
+\end{flalign}
+\text{Since E is a function of $M$, $\hat{M}$}
+\begin{flalign}
+H(M|\hat{M}) &= H(E|\hat{M}) + H(M|E, \hat{M}) - 0 &&
+\end{flalign}
+\text{Conditionality reduces entropy}
+\begin{flalign}
+H(M|\hat{M}) &\leq H(E) + H(M|E, \hat{M}) && \\
+H(M|\hat{M}) &\leq  H_{2}(P_e) + H(M|E = 0, \hat{M}) P_E(0) + H(M|E = 1, \hat{M}) P_E(1) &&\\
+H(M|\hat{M}) &\leq H_{2}(P_e) + H(M|\hat{M}, E=1)P_e && \\
+H(M|\hat{M}) &\leq H_{2}(P_e) + P_eH(M) && \\ 
+H(M|\hat{M}) &\leq H_{2}(P_e) + P_e log_{2}|M| && 
+\end{flalign}
 
+\section{Proof of converse of channel coding theorem}
+\begin{tikzpicture}[
+    node distance = 5mm and 7mm,
+      start chain = going right,
+  alg/.style = {draw, align=center, font=\linespread{0.8}\selectfont}
+                    ]
+\begin{scope}[every node/.append style={on chain, join=by -Stealth}]
+\node (n1)  {$M^{k_n}$};
+\node (n2) [alg]  {$ENC_n$};
+\node (n3) [alg]  {$P(Y|X)$};
+\node (n4) [alg] {$DEC_n$};
+\node (n5)  {$\hat{M}^{k_n}$};
+\end{scope}
+\node[below=of n1] {\in $\{0,1\}^{k_n}$}
+\node[below=of n3]  {$X_i\in\mathbb{X}$\hspace{.4in}$Y_i\in\mathbb{Y}$};
+\end{tikzpicture}
 
-\section{Degraded Channels}
+Consider any sequence $ENC_n, DEC_n$ such that \\
+$\lim_{n \to \infty} inf \dfrac{k_n}{n} \geq c + \epsilon$ \\
+Then, \\
+$\lim_{n \to \infty} inf Pr[\hat{M}^{k_n} \neq \M^{k_n}]$
 
-$\bfq_{Y|X}$ is stochastically degraded w.r.t. $\bfp_{Z|X}$ if we can find $\bfr_{Y|Z}$ such that,
-    $$\bfq_{Y|X}(y|x) = \sum_{z \epsilon \bZ} \bfr_{Y|Z}(y|z)\bfp_{Z|X}(z|x)$$
-
-If $C_{DMC1} \geq C_{DMC2} \implies$ channel 2 is degraded wrt channel 1.
-
-\textbf{HW} If $I(X;Z) \geq I(X;Y)$, show that $C_{DMC1} \geq C_{DMC2}$ \newline
-\textbf{Solution:}
-\begin{align}
-    & C = max_{\bfp_x} I(X;Y)  \\
-    \implies & max_{\bfp_x}I(X;Z) \geq max_{\bfp_x}I(X;Y) \\
-     \implies & C_{DMC1} \geq C_{DMC2}
-\end{align}
-
-\subsection{Capacity of channels}
-
-\begin{itemize}
-    \item $C_{BSC}(p) = 1 - H_2(p)$
-    \item $C_{BEC}(p) = 1 - p$
-    \item $C_{AWGN}(p, \sigma^2) =  \frac{1}{2}log(1 + \frac{p}{\sigma^2})$
-\end{itemize}
-
-\subsection{Examples}
-\textbf{Problem 1.} Can BSC(0.1) be degraded wrt BSC(0.2) \\
-\textbf{Solution} $$C_{BSC(0.1)} \ge C_{BSC(0.2)}$$
-Therefore, BSC(0.2) is degraded wrt BSC(0.1)
-
-\begin{figure}[!ht]
-    \centering
-    \input{images/bsc.tex}
-    \caption{Combination of two BSC's}
-    \label{fig:bsc}
-\end{figure}
-
-We can write the combination of two BSCs as one BSC($p \ast p^{'}$).
-\begin{align}
-    & p \ast p^{'} = p(1-p^{'}) + p^{'}(1-p) \\
-    \implies & 0.1 = p^{'}(1-0.2) + (1-p^{'})0.2  \\
-    \implies & p^{'} = 0.125
-\end{align}
-
-Therefore we can say that, BSC(0.2) is concantenation of BSC(0.1) and BSC(0.125).
-
-\textbf{Problem 2.} BEC(0.1) vs BEC(0.2)\\
-\textbf{Solution} $$C_{BEC(0.1)} \ge C_{BEC(0.2)}$$
-Therefore, BEC(0.2) is degraded wrt BEC(0.1)
-\begin{figure}[!ht]
-    \centering
-    \input{images/bec.tex}
-    \caption{Combination of two BEC's}
-    \label{fig:bec}
-\end{figure}
-
-\begin{align}
-    & p^{''} = (1-p)p^{'} + p \\
-    & 0.2 = (1-0.1)p^{'} + 0.1\\
-    \implies & p^{'} = \frac{1}{9}
-\end{align}
-
-\textbf{Problem 3.} BSC(0.1) vs BEC(0.1)\\
-\textbf{Solution} \begin{align}
-    &C_{BEC(0.1)} = 0.9 \\
-    &C_{BSC(0.1)} = 0.53
-\end{align}
-Therefore, BSC(0.1) is degraded wrt BEC(0.1).
-
-
-\textbf{Problem 4.} BSC(0.01) vs BEC(0.5)\\
-\textbf{Solution} \begin{align}
-    &C_{BEC(0.5)} = 0.5 \\
-    &C_{BSC(0.01)} \approx 1
-\end{align}
-    Therefore, BEC(0.5) is degraded wrt BSC(0.01).
-
-\subsection{AWGN channels}
-\textbf{Let $\sigma_{1}^2 \geq \sigma_{2}^2$, then $C_{1} \geq C_{2}$.
-Therefore channel 2 is degraded wrt channel 1.} \\
-There exist some $\sigma_{3}^2$ such that,
-\begin{align}
-    \sigma_{1}^2 = \sigma_{2}^2 + \sigma_{3}^2
-\end{align}
-
-\subsection{Uniform channels}
-\textbf{Let $\alpha_{1} \geq \alpha_{2}$, then $C_{2} \geq C_{1}$.
-Therefore channel 1 is degraded wrt channel 2.} \\
-There exist some $\alpha_{3}$ such that,
-\begin{align}
-    \alpha_{1} = \alpha_{2} + \alpha_{3}
-\end{align}
 \end{document}
 
 
